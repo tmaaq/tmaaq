@@ -1,1 +1,1 @@
-web: python bagot.py
+web: python bagot-bot.py
