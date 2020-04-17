@@ -1,1 +1,1 @@
-web: heroku/python bagot-bot.py
+web: python3 bagot-bot.py
