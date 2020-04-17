@@ -1,2 +1,2 @@
-web: python3 bagot-bot.py
-worker: python3 bagot-bot.py.py
+web: python bagot-bot.py
+worker: python bagot-bot.py
