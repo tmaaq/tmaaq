@@ -1,1 +1,1 @@
-worker: python bagot-bot.py
+worker: python3 bagot-bot.py
