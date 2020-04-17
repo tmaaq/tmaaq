@@ -1,33 +1,30 @@
 import telebot
 import os
 from flask import Flask, request
+import logging
 
+bot = telebot.TeleBot(token)
 
-bot = telebot.TeleBot('1119016973:AAGKeP-J6VDcr3LpEa8WYNu63yA_eh0zBIU');
+# Здесь пишем наши хэндлеры
 
-server = Flask(__name__)
+# Проверим, есть ли переменная окружения Хероку (как ее добавить смотрите ниже)
+if "HEROKU" in list(os.environ.keys()):
+    logger = telebot.logger
+    telebot.logger.setLevel(logging.INFO)
 
-
-@bot.message_handler(commands=['start'])
-def handle_text(message):
-    user_markup = telebot.types.ReplyKeyboardMarkup(True,False)
-    user_markup.row('/start','/info')
-    start_text = str('Привет, '+message.from_user.first_name+'!\nЯ бот на Heroku.')
-    bot.send_message(chat_id=1154965888, text=start_text, parse_mode='Markdown')
-
-
-@server.route('/' + tokenBot.TOKEN, methods=['POST'])
-def getMessage():
-    bot.process_new_updates([telebot.types.Update.de_json(request.stream.read().decode("utf-8"))])
-    return "!", 200
-
-@server.route("/")
-def webhook():
+    server = Flask(__name__)
+    @server.route("/bot", methods=['POST'])
+    def getMessage():
+        bot.process_new_updates([telebot.types.Update.de_json(request.stream.read().decode("utf-8"))])
+        return "!", 200
+    @server.route("/")
+    def webhook():
+        bot.remove_webhook()
+        bot.set_webhook(url="https://min-gallows.herokuapp.com/bot") # этот url нужно заменить на url вашего Хероку приложения
+        return "?", 200
+    server.run(host="0.0.0.0", port=os.environ.get('PORT', 80))
+else:
+    # если переменной окружения HEROKU нету, значит это запуск с машины разработчика.  
+    # Удаляем вебхук на всякий случай, и запускаем с обычным поллингом.
     bot.remove_webhook()
-    bot.set_webhook(url='https://test-new-new.herokuapp.com/' + tokenBot.TOKEN)
-    return "!", 200
-
-
-if __name__ == '__main__':
-    server.debug = True
-    server.run(host="0.0.0.0", port=int(os.environ.get('PORT', 5000)))
+    bot.polling(none_stop=True)
