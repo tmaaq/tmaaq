@@ -1,1 +1,1 @@
-worker: python bagot-bot.py $PORT
+worker: python bagot-bot.py
