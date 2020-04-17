@@ -1,2 +1,2 @@
-web: python bagot-bot.py
-worker: python bagot-bot.py
+web: heroku/python bagot-bot.py
+worker: heroku/python bagot-bot.py
